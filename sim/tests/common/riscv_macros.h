@@ -102,13 +102,24 @@
 #define INTERRUPT_HANDLER j other_exception /* No interrupts should occur */
 
 #define RVTEST_CODE_BEGIN                                               \
+        .org 0x100, 0x0; \
+        MSG:                                                            \
+          .string "misaligned!";                                           \
         .section .text.init;                                            \
-        .org 0xC0, 0x00;                                                \
         .balign  64;                                                    \
         .weak stvec_handler;                                            \
         .weak mtvec_handler;                                            \
 trap_vector:                                                            \
         /* test whether the test came from pass/fail */                 \
+        li a6, 0xf0000000;                                                \
+        la a7, MSG;                                                     \
+      loop:                                                             \
+        lb t0, 0(a7);                                                   \
+        beq t0, x0, loop_end;                                              \
+        sw t0, 0(a6);                                                   \
+        addi a7, a7, 1;                                                 \
+        jal x0, loop;                                                   \
+      loop_end:                                                         \
         csrr a4, mcause;                                                \
         li a5, CAUSE_USER_ECALL;                                        \
         beq a4, a5, _report;                                            \
@@ -133,6 +144,7 @@ _report:                                                                \
         j sc_exit;                                                      \
         .balign  64;                                                    \
         .globl _start;                                                  \
+        .section .text.start;                                           \
 _start:                                                                 \
         RISCV_MULTICORE_DISABLE;                                        \
         /*INIT_SPTBR;*/                                                 \
