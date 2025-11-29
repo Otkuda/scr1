@@ -26,7 +26,7 @@ SECTIONS {
     SIM_STOP = .;
     LONG(0x6F);
     LONG(-1);
-    . = 0x8c0;
+    . = 0x7c0;
     PROVIDE(__TEXT_START__ = .);
     *(.text.init) 
   } >RAM

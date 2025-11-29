@@ -102,10 +102,10 @@
 #define INTERRUPT_HANDLER j other_exception /* No interrupts should occur */
 
 #define RVTEST_CODE_BEGIN                                               \
-        .org 0x100, 0x0; \
         MSG:                                                            \
           .string "misaligned!";                                           \
         .section .text.init;                                            \
+        .org 0x100, 0x0; \
         .balign  64;                                                    \
         .weak stvec_handler;                                            \
         .weak mtvec_handler;                                            \
