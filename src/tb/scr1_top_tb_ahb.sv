@@ -257,6 +257,9 @@ always_ff @(posedge clk) begin
     else if (~&rst_cnt) rst_cnt <= rst_cnt + 1'b1;
 end
 
+initial begin
+  $timeformat(-12, 2, "ps", 6);
+end
 
 `ifdef SCR1_DBG_EN
 initial begin
@@ -387,6 +390,12 @@ scr1_memory_tb_ahb #(
     .dmem_hready            (dmem_hready),
     .dmem_hrdata            (dmem_hrdata),
     .dmem_hresp             (dmem_hresp )
+);
+
+scr1_and_instr_mon mon_inst(
+  .clk(clk),
+  .imem_resp(i_top.i_imem_ahb.imem_resp),
+  .imem_rdata(i_top.i_imem_ahb.imem_rdata)
 );
 
 endmodule : scr1_top_tb_ahb
